@@ -25,7 +25,7 @@ export class ReferenceProvider implements vscode.ReferenceProvider {
                 reject(new Error('Error'));
             }
             // --column is hardcoded because its mandatory for now
-            const options = '--column '+engine_options;
+            const options = '--pcre2 '+'--column '+engine_options;
 
             // Note to self: if we pass in the additional space after the shell execution, command doesn't get executed correctly when the argument has an extra space.
             // `rg --column` and not `rg --column `
@@ -54,6 +54,10 @@ export class ReferenceProvider implements vscode.ReferenceProvider {
 
             lines.forEach((item) => {
                 let arr = item.split(":");
+
+                if (document.languageId == "cpp") {
+                    arr = item.replace(new RegExp("::", 'g'),";;").split(":")
+                }
 
                 if (arr.length>2) {
                     // In case of drive letter
